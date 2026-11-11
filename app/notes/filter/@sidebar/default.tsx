@@ -7,9 +7,9 @@ const SidebarNotes = async () => {
     return (
       <ul className={css.menuList}>
           <li className={css.menuItem}>
-            <a href={`/notes/filter/all`} className={css.menuLink}>
+            <Link href={`/notes/filter/all`} className={css.menuLink}>
               All notes
-            </a>
+            </Link>
           </li>
           {tags.map((tag) => (
             <li key={tag} className={css.menuItem}>
