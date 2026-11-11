@@ -1,10 +1,17 @@
 import axios from "axios";
-import type { Note, CreateNote } from "@/types/note";
+import type { Note, CreateNote, NoteTag } from "@/types/note";
 
 
 interface Response {
     notes: Note[]
     totalPages: number
+}
+
+interface FetchNotesArgs {
+    search?: string;
+    page?: number;
+    perPage?: number;
+    tag?: NoteTag | 'all'; 
 }
 
 const api = axios.create({
@@ -15,15 +22,19 @@ const api = axios.create({
   },
 })
 
-export const fetchNotes = async (
-    search: string = "", 
-    page: number = 1
-): Promise<Response> => { 
+export const fetchNotes = async ({
+    search = "",
+    page = 1,
+    perPage = 12,
+    tag
+  }: FetchNotesArgs = {}): Promise<Response> => {
+   
     const { data } = await api.get<Response>('/notes', {
         params: {
             search,
             page,
-            perPage: 12
+            perPage,
+            tag: (tag && tag !== 'all' ? tag: undefined)
         }});
      return data;
 };
@@ -42,5 +53,4 @@ export const fetchNoteById = async (id: string) => {
   const res = await api.get<Note>(`/notes/${id}`);
   return res.data;
 };
-
 

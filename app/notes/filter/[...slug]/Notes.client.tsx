@@ -5,6 +5,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useDebouncedCallback } from 'use-debounce';
 import { useQuery, keepPreviousData } from '@tanstack/react-query'
 import { fetchNotes } from '@/lib/api'
+import type { NoteTag } from '@/types/note';
 import SearchBox from '@/components/SearchBox/SearchBox'
 import NoteList from '@/components/NoteList/NoteList'
 import Pagination from '@/components/Pagination/Pagination';
@@ -14,10 +15,13 @@ import Loader from '@/components/Loader/Loader';
 import EmptyState from '@/components/EmptyState/EmptyState';
 import ErrorMessage from '@/components/ErrorMessage/ErrorMessage';
 
-import css from "./page.module.css";
+import css from "./Notes.client.module.css";
 
+interface NotesClientProps {
+  tag: string;
+}
 
-export default function App() {
+export default function App({tag}: NotesClientProps) {
 
   const [searchInput, setSearchInput] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -41,8 +45,12 @@ export default function App() {
 }, 300);
 
   const { data, isSuccess, isLoading, error, isError, isFetching } = useQuery({
-    queryKey: [ 'notes', searchQuery, currentPage],
-    queryFn: () => fetchNotes(searchQuery, currentPage),
+    queryKey: [ 'notes', searchQuery, currentPage, tag],
+    queryFn: () => fetchNotes({
+      search: searchQuery, 
+      page: currentPage, 
+      tag: tag as NoteTag | 'all'
+    }),
     placeholderData: keepPreviousData,
   });
 

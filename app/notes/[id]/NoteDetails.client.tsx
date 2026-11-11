@@ -2,11 +2,13 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { fetchNoteById } from '@/lib/api'
 
 import css from './NoteDetails.module.css'
 
 const NoteDetailsClient = () => {
+  const router = useRouter();
 	const { id } = useParams<{ id: string }>();
 
   const { data: note, isLoading, error } = useQuery({
@@ -27,6 +29,7 @@ const NoteDetailsClient = () => {
   return (
     <main className={css.main}>	
 	    <div className={css.container}>
+        <button onClick={() => router.back()} className={css.backBtn}>Back</button>
 		    <div className={css.item}>
 		      <div className={css.header}>
 		        <h2>{note.title}</h2>
